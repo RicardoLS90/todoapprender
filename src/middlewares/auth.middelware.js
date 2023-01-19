@@ -5,6 +5,7 @@ const authMiddleware= (req,res,next)=> {
   let {authorization: token}= req.headers;
   token= token.replace('Bearer ','');
   console.log(token)
+  if (token) {
   jwt.verify(token, 
     process.env.JWT_SECRET, 
     {algorithms:'HS512'},(error,decoded)=>{
@@ -17,7 +18,12 @@ const authMiddleware= (req,res,next)=> {
         console.log(decoded)
         next();
       }
-    })
+    })} else {
+      res.status(400).json({
+        error: "no tiene token",
+        message: "no esta enviando un token de autenticacion"
+      })
+    }
 }
 
 module.exports= authMiddleware;
